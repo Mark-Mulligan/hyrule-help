@@ -1,5 +1,5 @@
 // Components
-import Select from "../../components/Select";
+import MultiSelect from "~/components/MultiSelect";
 
 const exampleQuestions = [
   {
@@ -47,7 +47,8 @@ const Questions = () => {
             placeholder="Search..."
             className="input-bordered input w-full max-w-xs"
           />
-          <Select />
+
+          <MultiSelect />
         </div>
       </div>
 
