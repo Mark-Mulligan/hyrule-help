@@ -9,6 +9,9 @@ import { SessionProvider } from "next-auth/react";
 // TRPC
 import { api } from "~/utils/api";
 
+// Components
+import Navbar from "~/components/Navbar";
+
 // Styles
 import "~/styles/globals.css";
 
@@ -26,6 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           fill
         />
       </div>
+      <Navbar />
 
       <Component {...pageProps} />
     </SessionProvider>
