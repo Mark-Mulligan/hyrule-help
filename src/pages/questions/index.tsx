@@ -1,6 +1,9 @@
 // react
 import { useState } from "react";
 
+// TRPC
+import { api } from "~/utils/api";
+
 // Components
 import MultiSelect from "~/components/MultiSelect";
 import QuestionModal from "~/components/QuestionModal";
@@ -59,6 +62,12 @@ const Questions = () => {
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [categoriesFilter, setCategoriesFilter] = useState<SelectOption[]>([]);
   const [gameFilter, setGameFilter] = useState<SelectOption[]>([]);
+
+  const questionQuery = api.questions.getAll.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
+
+  console.log(questionQuery.data);
 
   return (
     <main className="container mx-auto pb-16 pt-24">

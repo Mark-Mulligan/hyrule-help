@@ -1,6 +1,9 @@
 // react
 import { type FC, type FormEvent, useState } from "react";
 
+// TRPC
+import { api } from "~/utils/api";
+
 // Components
 import MultiSelect from "./MultiSelect";
 
@@ -19,11 +22,11 @@ const categoryOptions = [
 ];
 
 const gameOptions = [
+  { label: "TOTK", value: "totk" },
   {
     label: "BOTW",
     value: "botw",
   },
-  { label: "TOTK", value: "totk" },
 ];
 
 const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
@@ -37,9 +40,22 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
     gameOptions[0]?.value
   );
 
+  const questionMutation = api.questions.addQuestion.useMutation({
+    onSuccess: () => handleClose(),
+  });
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    if (!selectedGame) {
+      return;
+    }
     console.log({ title, content, selectedCategories, selectedGame });
+    const categories = selectedCategories
+      .map((category) => category.value)
+      .join(",");
+    const game = selectedGame;
+    questionMutation.mutate({ title, content, categories, game });
   };
 
   return (
