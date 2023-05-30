@@ -5,6 +5,9 @@ import { useState } from "react";
 import MultiSelect from "~/components/MultiSelect";
 import QuestionModal from "~/components/QuestionModal";
 
+// Types
+import { SelectOption } from "~/types/customTypes";
+
 const exampleQuestions = [
   {
     title: "Where is the shrine called Jodifdsk?",
@@ -54,6 +57,8 @@ const gameOptions = [
 
 const Questions = () => {
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
+  const [categoriesFilter, setCategoriesFilter] = useState<SelectOption[]>([]);
+  const [gameFilter, setGameFilter] = useState<SelectOption[]>([]);
 
   return (
     <main className="container mx-auto pb-16 pt-24">
@@ -85,8 +90,17 @@ const Questions = () => {
             <MultiSelect
               options={categoryOptions}
               placeholder="Filter By Category"
+              selectedOptions={categoriesFilter}
+              setSelectedOptions={setCategoriesFilter}
+              name="categoryFilters"
             />
-            <MultiSelect options={gameOptions} placeholder="Filter By Game" />
+            <MultiSelect
+              options={gameOptions}
+              placeholder="Filter By Game"
+              selectedOptions={gameFilter}
+              setSelectedOptions={setGameFilter}
+              name="gameFilters"
+            />
           </div>
         </div>
       </div>

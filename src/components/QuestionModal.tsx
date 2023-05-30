@@ -1,8 +1,11 @@
 // react
-import { FC } from "react";
+import { type FC, type FormEvent, useState } from "react";
 
 // Components
 import MultiSelect from "./MultiSelect";
+
+// Types
+import type { SelectOption } from "~/types/customTypes";
 
 interface IProps {
   handleClose: () => void;
@@ -24,6 +27,21 @@ const gameOptions = [
 ];
 
 const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  const [selectedCategories, setSelectedCategories] = useState<SelectOption[]>(
+    []
+  );
+  const [selectedGame, setSelectedGame] = useState<string | undefined>(
+    gameOptions[0]?.value
+  );
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    console.log({ title, content, selectedCategories, selectedGame });
+  };
+
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
       <div className="modal-box relative">
@@ -35,51 +53,77 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
           ✕
         </label>
         <h3 className="text-lg font-bold">New Question</h3>
-        <ul>
-          <li className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Title</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input-bordered input w-full"
-            />
-          </li>
-          <li className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Question</span>
-            </label>
-            <textarea
-              className="textarea-bordered textarea h-24"
-              placeholder="Bio"
-            ></textarea>
-          </li>
-          <li className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Categories</span>
-            </label>
-            <MultiSelect options={categoryOptions} placeholder="select..." />
-          </li>
-          <li className="form-control w-full">
-            <label className="label">
-              <span className="label-text">Game</span>
-            </label>
-            <select className="select-bordered select">
-              <option selected value="totk">
-                TOTK
-              </option>
-              <option value="botw">BOTW</option>
-            </select>
-          </li>
-        </ul>
+        <form onSubmit={handleSubmit}>
+          <ul>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Title</span>
+              </label>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                type="text"
+                placeholder="Type here"
+                className="input-bordered input w-full"
+                required
+              />
+            </li>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Question</span>
+              </label>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="textarea-bordered textarea h-24"
+                placeholder="Bio"
+                required
+              ></textarea>
+            </li>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Categories</span>
+              </label>
+              <MultiSelect
+                options={categoryOptions}
+                placeholder="select..."
+                selectedOptions={selectedCategories}
+                setSelectedOptions={setSelectedCategories}
+                name="categorySelect"
+              />
+            </li>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Game</span>
+              </label>
+              <select
+                className="select-bordered select"
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+                required
+              >
+                {gameOptions.map((option) => {
+                  return (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  );
+                })}
+              </select>
+            </li>
+          </ul>
 
-        <div className="mt-6 flex items-center justify-between">
-          <button className="btn-error btn" onClick={handleClose}>
-            Cancel
-          </button>
-          <button className="btn-success btn">Submit</button>
-        </div>
+          <div className="mt-6 flex items-center justify-between">
+            <button
+              className="btn-error btn"
+              type="submit"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button className="btn-success btn">Submit</button>
+          </div>
+        </form>
       </div>
     </div>
   );
