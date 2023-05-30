@@ -1,5 +1,9 @@
+// react
+import { useState } from "react";
+
 // Components
 import MultiSelect from "~/components/MultiSelect";
+import QuestionModal from "~/components/QuestionModal";
 
 const exampleQuestions = [
   {
@@ -49,14 +53,24 @@ const gameOptions = [
 ];
 
 const Questions = () => {
+  const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
+
   return (
     <main className="container mx-auto pb-16 pt-24">
       <h1 className="relative mx-auto mb-4 max-w-4xl text-center text-5xl font-bold">
         Questions
-        <button className="btn-primary btn absolute right-0">
+        <button
+          className="btn-primary btn absolute right-0"
+          onClick={() => setShowAddQuestionModal(true)}
+        >
           Ask Question
         </button>
       </h1>
+
+      <QuestionModal
+        isOpen={showAddQuestionModal}
+        handleClose={() => setShowAddQuestionModal(false)}
+      />
 
       <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
         <div className="card-body">

@@ -80,7 +80,9 @@ const MultiSelect: FC<IProps> = ({ options, placeholder }) => {
                 </div>
               );
             })}
-            {selectedOptions.length === 0 && <span>{placeholder}</span>}
+            {selectedOptions.length === 0 && (
+              <span className="font-normal text-gray-400">{placeholder}</span>
+            )}
           </div>
         </Listbox.Button>
         <div className="relative z-10">
