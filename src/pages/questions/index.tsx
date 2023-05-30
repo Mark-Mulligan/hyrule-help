@@ -34,25 +34,49 @@ const exampleQuestions = [
   },
 ];
 
+const categoryOptions = [
+  { label: "Shrines", value: "shrines" },
+  { label: "Side Quests", value: "side-quests" },
+  { label: "Loot", value: "loot " },
+];
+
+const gameOptions = [
+  {
+    label: "BOTW",
+    value: "botw",
+  },
+  { label: "TOTK", value: "totk" },
+];
+
 const Questions = () => {
   return (
     <main className="container mx-auto pb-16 pt-24">
-      <h1 className="mb-4 text-center text-5xl font-bold">Questions</h1>
+      <h1 className="relative mx-auto mb-4 max-w-4xl text-center text-5xl font-bold">
+        Questions
+        <button className="btn-primary btn absolute right-0">
+          Ask Question
+        </button>
+      </h1>
 
-      <div className="card mx-auto max-w-2xl bg-base-300">
+      <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
         <div className="card-body">
           <h2 className="text-center">Filters</h2>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="input-bordered input w-full max-w-xs"
-          />
+          <div className="grid grid-cols-3 gap-2">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="input-bordered input w-full"
+            />
 
-          <MultiSelect />
+            <MultiSelect
+              options={categoryOptions}
+              placeholder="Filter By Category"
+            />
+            <MultiSelect options={gameOptions} placeholder="Filter By Game" />
+          </div>
         </div>
       </div>
 
-      <button className="btn-primary btn">Ask Question</button>
       <ul className="mx-auto max-w-md">
         {exampleQuestions.map((question) => {
           return (
