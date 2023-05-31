@@ -3,6 +3,7 @@ import { useState } from "react";
 
 // next
 import Image from "next/image";
+import Link from "next/link";
 
 // Moment JS
 import moment from "moment";
@@ -86,44 +87,45 @@ const Questions = () => {
       <ul className="mx-auto max-w-4xl">
         {questionQuery.data?.map((question) => {
           return (
-            <li
-              key={question.id}
-              className="card card-side mb-4 cursor-pointer bg-base-100 shadow-xl"
-            >
-              <figure>
-                <Image
-                  src={question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"}
-                  alt={
-                    question.game === "botw"
-                      ? "Breath of the wild cover photo"
-                      : "Tears of the kingdom cover photo"
-                  }
-                  className="h-full w-36"
-                  width={100}
-                  height={100}
-                />
-              </figure>
-              <div className="card-body">
-                <div className="flex w-full flex-row items-center justify-between">
-                  <h2 className="card-title">{question.title}</h2>
-                  <p className="flex-none font-light">
-                    {moment(question.createdAt).format("MMMM Do YYYY, h:mm a")}
-                  </p>
-                </div>
+            <Link key={question.id} href={`/questions/${question.id}`}>
+              <li className="card card-side mb-4 cursor-pointer bg-base-100 shadow-xl">
+                <figure>
+                  <Image
+                    src={question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"}
+                    alt={
+                      question.game === "botw"
+                        ? "Breath of the wild cover photo"
+                        : "Tears of the kingdom cover photo"
+                    }
+                    className="h-full w-36"
+                    width={100}
+                    height={100}
+                  />
+                </figure>
+                <div className="card-body">
+                  <div className="flex w-full flex-row items-center justify-between">
+                    <h2 className="card-title">{question.title}</h2>
+                    <p className="flex-none font-light">
+                      {moment(question.createdAt).format(
+                        "MMMM Do YYYY, h:mm a"
+                      )}
+                    </p>
+                  </div>
 
-                <p>{question.user.name}</p>
-                <p>{question.content}</p>
-                <ul>
-                  {question.categories.split(",").map((category) => {
-                    return (
-                      <li className="badge-outline badge mr-2" key={category}>
-                        {category}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </li>
+                  <p>{question.user.name}</p>
+                  <p>{question.content}</p>
+                  <ul>
+                    {question.categories.split(",").map((category) => {
+                      return (
+                        <li className="badge-outline badge mr-2" key={category}>
+                          {category}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </li>
+            </Link>
           );
         })}
       </ul>
