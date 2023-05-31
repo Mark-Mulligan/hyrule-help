@@ -19,6 +19,14 @@ export const questionsRouter = createTRPCRouter({
 
     return result;
   }),
+  getQuestion: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const result = await ctx.prisma.question.findUnique({
+        where: { id: input.id },
+      });
+      return result;
+    }),
   addQuestion: protectedProcedure
     .input(
       z.object({
