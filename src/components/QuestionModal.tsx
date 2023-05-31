@@ -13,6 +13,7 @@ import type { SelectOption } from "~/types/customTypes";
 interface IProps {
   handleClose: () => void;
   isOpen: boolean;
+  onQuestionAdd: () => void;
 }
 
 const categoryOptions = [
@@ -29,7 +30,7 @@ const gameOptions = [
   },
 ];
 
-const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
+const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -41,7 +42,7 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen }) => {
   );
 
   const questionMutation = api.questions.addQuestion.useMutation({
-    onSuccess: () => handleClose(),
+    onSuccess: () => onQuestionAdd(),
   });
 
   const handleSubmit = (e: FormEvent) => {

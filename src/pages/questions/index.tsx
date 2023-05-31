@@ -1,6 +1,12 @@
 // react
 import { useState } from "react";
 
+// next
+import Image from "next/image";
+
+// Moment JS
+import moment from "moment";
+
 // TRPC
 import { api } from "~/utils/api";
 
@@ -9,40 +15,7 @@ import MultiSelect from "~/components/MultiSelect";
 import QuestionModal from "~/components/QuestionModal";
 
 // Types
-import { SelectOption } from "~/types/customTypes";
-
-const exampleQuestions = [
-  {
-    title: "Where is the shrine called Jodifdsk?",
-    questionId: "1234",
-    user: "Mark Mulligan",
-    categories: ["shrines", "loot"],
-  },
-  {
-    title: "Where is the shrine called Jodifdsk?",
-    questionId: "1234",
-    user: "Mark Mulligan",
-    categories: ["shrines", "loot"],
-  },
-  {
-    title: "Where is the shrine called Jodifdsk?",
-    questionId: "1234",
-    user: "Mark Mulligan",
-    categories: ["shrines", "loot"],
-  },
-  {
-    title: "Where is the shrine called Jodifdsk?",
-    questionId: "1234",
-    user: "Mark Mulligan",
-    categories: ["shrines", "loot"],
-  },
-  {
-    title: "Where is the shrine called Jodifdsk?",
-    questionId: "1234",
-    user: "Mark Mulligan",
-    categories: ["shrines", "loot"],
-  },
-];
+import type { SelectOption } from "~/types/customTypes";
 
 const categoryOptions = [
   { label: "Shrines", value: "shrines" },
@@ -67,6 +40,11 @@ const Questions = () => {
     refetchOnWindowFocus: false,
   });
 
+  const onQuestionAdd = () => {
+    setShowAddQuestionModal(false);
+    void questionQuery.refetch();
+  };
+
   console.log(questionQuery.data);
 
   return (
@@ -84,6 +62,7 @@ const Questions = () => {
       <QuestionModal
         isOpen={showAddQuestionModal}
         handleClose={() => setShowAddQuestionModal(false)}
+        onQuestionAdd={onQuestionAdd}
       />
 
       <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
@@ -114,17 +93,40 @@ const Questions = () => {
         </div>
       </div>
 
-      <ul className="mx-auto max-w-md">
-        {exampleQuestions.map((question) => {
+      <ul className="mx-auto max-w-4xl">
+        {questionQuery.data?.map((question) => {
           return (
-            <li key={question.questionId} className="card glass mb-4">
+            <li
+              key={question.id}
+              className="card card-side mb-4 cursor-pointer bg-base-100 shadow-xl"
+            >
+              <figure>
+                <Image
+                  src={question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"}
+                  alt={
+                    question.game === "botw"
+                      ? "Breath of the wild cover photo"
+                      : "Tears of the kingdom cover photo"
+                  }
+                  className="h-full w-36"
+                  width={100}
+                  height={100}
+                />
+              </figure>
               <div className="card-body">
-                <h2 className="card-title">{question.title}</h2>
-                <p className="mb-4">{question.user}</p>
-                <ul className="card-actions">
-                  {question.categories.map((category) => {
+                <div className="flex w-full flex-row items-center justify-between">
+                  <h2 className="card-title">{question.title}</h2>
+                  <p className="flex-none font-light">
+                    {moment(question.createdAt).format("MMMM Do YYYY, h:mm a")}
+                  </p>
+                </div>
+
+                <p>{question.user.name}</p>
+                <p>{question.content}</p>
+                <ul>
+                  {question.categories.split(",").map((category) => {
                     return (
-                      <li className="badge-outline badge" key={category}>
+                      <li className="badge-outline badge mr-2" key={category}>
                         {category}
                       </li>
                     );
