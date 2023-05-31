@@ -13,23 +13,13 @@ import { api } from "~/utils/api";
 // Components
 import MultiSelect from "~/components/MultiSelect";
 import QuestionModal from "~/components/QuestionModal";
+import LoadingModal from "~/components/LoadingModal";
 
 // Types
 import type { SelectOption } from "~/types/customTypes";
 
-const categoryOptions = [
-  { label: "Shrines", value: "shrines" },
-  { label: "Side Quests", value: "side-quests" },
-  { label: "Loot", value: "loot " },
-];
-
-const gameOptions = [
-  {
-    label: "BOTW",
-    value: "botw",
-  },
-  { label: "TOTK", value: "totk" },
-];
+// Utils
+import { categoryOptions, gameOptions } from "~/utils/selects";
 
 const Questions = () => {
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
@@ -137,6 +127,9 @@ const Questions = () => {
           );
         })}
       </ul>
+      {questionQuery.isLoading && (
+        <LoadingModal loadingText="Loading Questions..." />
+      )}
     </main>
   );
 };

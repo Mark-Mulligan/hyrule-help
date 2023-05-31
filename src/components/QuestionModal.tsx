@@ -6,29 +6,19 @@ import { api } from "~/utils/api";
 
 // Components
 import MultiSelect from "./MultiSelect";
+import LoadingModal from "./LoadingModal";
 
 // Types
 import type { SelectOption } from "~/types/customTypes";
+
+// Utils
+import { categoryOptions, gameOptions } from "~/utils/selects";
 
 interface IProps {
   handleClose: () => void;
   isOpen: boolean;
   onQuestionAdd: () => void;
 }
-
-const categoryOptions = [
-  { label: "Shrines", value: "shrines" },
-  { label: "Side Quests", value: "side-quests" },
-  { label: "Loot", value: "loot " },
-];
-
-const gameOptions = [
-  { label: "TOTK", value: "totk" },
-  {
-    label: "BOTW",
-    value: "botw",
-  },
-];
 
 const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
   const [title, setTitle] = useState("");
@@ -141,6 +131,9 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
             <button className="btn-success btn">Submit</button>
           </div>
         </form>
+        {questionMutation.isLoading && (
+          <LoadingModal loadingText="Adding Question..." />
+        )}
       </div>
     </div>
   );
