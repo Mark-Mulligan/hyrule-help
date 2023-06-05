@@ -5,6 +5,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+// Next-Auth
+import { useSession, signIn } from "next-auth/react";
+
 // Moment JS
 import moment from "moment";
 
@@ -23,6 +26,8 @@ import type { SelectOption } from "~/types/customTypes";
 import { categoryOptions, gameOptions } from "~/utils/selects";
 
 const Questions = () => {
+  const { data: session } = useSession();
+
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [categoriesFilter, setCategoriesFilter] = useState<SelectOption[]>([]);
   const [gameFilter, setGameFilter] = useState<SelectOption[]>([]);
@@ -44,7 +49,13 @@ const Questions = () => {
         Questions
         <button
           className="btn-primary btn absolute right-0"
-          onClick={() => setShowAddQuestionModal(true)}
+          onClick={() => {
+            if (session?.user) {
+              setShowAddQuestionModal(true);
+            } else {
+              void signIn();
+            }
+          }}
         >
           Ask Question
         </button>
@@ -88,8 +99,8 @@ const Questions = () => {
         {questionQuery.data?.map((question) => {
           return (
             <Link key={question.id} href={`/questions/${question.id}`}>
-              <li className="card card-side mb-4 cursor-pointer bg-base-100 shadow-xl">
-                <figure>
+              <li className="mb-4 flex cursor-pointer overflow-hidden rounded-2xl bg-base-100 shadow-xl">
+                <figure className="inline-block w-36">
                   <Image
                     src={question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"}
                     alt={
@@ -102,7 +113,7 @@ const Questions = () => {
                     height={100}
                   />
                 </figure>
-                <div className="card-body">
+                <div className="flex-1 flex-wrap p-5">
                   <div className="flex w-full flex-row items-center justify-between">
                     <h2 className="card-title">{question.title}</h2>
                     <p className="flex-none font-light">

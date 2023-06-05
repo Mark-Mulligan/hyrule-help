@@ -39,36 +39,36 @@ const QuestionPage = () => {
   return (
     <main className="container mx-auto min-h-screen max-w-4xl bg-base-100 bg-opacity-80 px-4 pb-16 pt-24">
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-4 text-center text-5xl font-bold">
-          {questionQuery.data?.title}
-        </h1>
+        <h1 className="mb-8 text-3xl font-bold">{questionQuery.data?.title}</h1>
         <ul>
+          <li className="mb-8">
+            <p>{questionQuery.data?.content}</p>
+          </li>
           <div className="grid grid-cols-2">
-            <li className="mb-2">
-              <h2 className="text-lg font-bold">Categories</h2>
+            <li className="mb-6">
+              <h2 className="font-semibold">Categories</h2>
               <ul>
                 {questionQuery.data?.categories.split(",").map((category) => {
                   return (
-                    <li className="badge-outline badge mr-2" key={category}>
+                    <li
+                      className="badge-outline badge mr-2 font-light"
+                      key={category}
+                    >
                       {category}
                     </li>
                   );
                 })}
               </ul>
             </li>
-            <li className="mb-2">
-              <h2 className="text-lg font-bold">Game</h2>
-              <p>
+            <li className="mb-6">
+              <h2 className="font-semibold">Game</h2>
+              <p className="font-light">
                 {questionQuery.data?.game === "botw"
                   ? "Breath of the Wild"
                   : "Tears of the Kingdom"}
               </p>
             </li>
           </div>
-          <li className="mb-2">
-            <h2 className="text-lg font-bold">Question</h2>
-            <p>{questionQuery.data?.content}</p>
-          </li>
         </ul>
         <button
           className="btn-primary btn"

@@ -31,8 +31,18 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
     gameOptions[0]?.value
   );
 
+  const clearForm = () => {
+    setTitle("");
+    setContent("");
+    setSelectedCategories([]);
+    setSelectedGame(gameOptions[0]?.value);
+  };
+
   const questionMutation = api.questions.addQuestion.useMutation({
-    onSuccess: () => onQuestionAdd(),
+    onSuccess: () => {
+      clearForm();
+      onQuestionAdd();
+    },
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -55,11 +65,14 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
         <label
           htmlFor="my-modal-3"
           className="btn-sm btn-circle btn absolute right-2 top-2"
-          onClick={handleClose}
+          onClick={() => {
+            handleClose();
+            clearForm();
+          }}
         >
           ✕
         </label>
-        <h3 className="text-lg font-bold">New Question</h3>
+        <h3 className="mb-4 text-lg font-bold">New Question</h3>
         <form onSubmit={handleSubmit}>
           <ul>
             <li className="form-control w-full">
@@ -75,18 +88,7 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
                 required
               />
             </li>
-            <li className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Question</span>
-              </label>
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="textarea-bordered textarea h-24"
-                placeholder="Bio"
-                required
-              ></textarea>
-            </li>
+
             <li className="form-control w-full">
               <label className="label">
                 <span className="label-text">Categories</span>
@@ -118,13 +120,28 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
                 })}
               </select>
             </li>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Question</span>
+              </label>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="textarea-bordered textarea h-24"
+                placeholder="Bio"
+                required
+              ></textarea>
+            </li>
           </ul>
 
-          <div className="mt-6 flex items-center justify-between">
+          <div className="mt-16 flex items-center justify-between">
             <button
               className="btn-error btn"
               type="submit"
-              onClick={handleClose}
+              onClick={() => {
+                handleClose();
+                clearForm();
+              }}
             >
               Cancel
             </button>
