@@ -32,7 +32,7 @@ const SignUp = () => {
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                type="text"
+                type="password"
                 placeholder="password"
                 className="input-bordered input w-full"
                 required
