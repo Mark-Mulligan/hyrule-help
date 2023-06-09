@@ -52,15 +52,19 @@ const MultiSelect: FC<IProps> = ({
 
   return (
     <Listbox multiple value={selectedValues} onChange={handleSelect} as="div">
-      <Listbox.Button className="select-bordered select relative w-full">
-        <div className="flex h-full items-center">
+      <Listbox.Button
+        className={`select-bordered select relative flex h-auto w-full items-stretch`}
+      >
+        <div className="flex flex-wrap items-center">
           {selectedOptions.map((option) => {
             return (
               <div
                 key={option.value}
-                className="relative mr-2 rounded-md bg-accent px-2"
+                className="relative mb-1 mr-2 mt-1 rounded-md bg-accent px-2"
               >
-                <span className="mr-6">{option.label}</span>
+                <span className="mr-6 whitespace-nowrap text-xs">
+                  {option.label}
+                </span>
                 <div
                   onClick={(e) => {
                     e.stopPropagation();

@@ -19,6 +19,14 @@ export const questionsRouter = createTRPCRouter({
 
     return result;
   }),
+  getAllFilter: publicProcedure
+    .input(z.object({ categories: z.string().array() }))
+    .query(({ input }) => {
+      console.log(input);
+
+      return "Something";
+    }),
+
   getQuestion: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {

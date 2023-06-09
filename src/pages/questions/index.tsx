@@ -1,9 +1,11 @@
 // react
-import { useState } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 
 // next
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 
 // Next-Auth
 import { useSession, signIn } from "next-auth/react";
@@ -24,24 +26,96 @@ import type { SelectOption } from "~/types/customTypes";
 
 // Utils
 import { categoryOptions, gameOptions } from "~/utils/selects";
+import { createQueryObject, removeQueryKey } from "~/utils/routing";
+
+const setMultiSelectInitialValue = (
+  queryValue: undefined | string | string[],
+  selectOptions: SelectOption[]
+) => {
+  if (queryValue === undefined) {
+    return [];
+  }
+  if (typeof queryValue === "string") {
+    return selectOptions.filter((option) => option.value === queryValue);
+  }
+
+  return selectOptions.filter((option) => queryValue.includes(option.value));
+};
 
 const Questions = () => {
   const { data: session } = useSession();
+  const router = useRouter();
 
   const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
   const [categoriesFilter, setCategoriesFilter] = useState<SelectOption[]>([]);
   const [gameFilter, setGameFilter] = useState<SelectOption[]>([]);
+  const [search, setSearch] = useState("");
 
   const questionQuery = api.questions.getAll.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
+
+  const filterQuestionQuery = api.questions.getAllFilter.useQuery(
+    { categories: categoriesFilter.map((category) => category.value) },
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
+    }
+  );
+
+  const filterSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const categoryValues = categoriesFilter.map((category) => category.value);
+    const gameValues = gameFilter.map((game) => game.value);
+    const queryObj: {
+      categories?: string | number | string[];
+      game?: string | number | string[];
+      q?: string;
+    } = {};
+
+    if (categoryValues.length > 0) queryObj.categories = categoryValues;
+    if (gameValues.length > 0) queryObj.game = gameValues;
+    if (search) queryObj.q = search;
+
+    void router.push({ pathname: "/questions", query: queryObj }, undefined, {
+      shallow: true,
+    });
+  };
+
+  const handleClear = () => {
+    setCategoriesFilter([]);
+    setGameFilter([]);
+    setSearch("");
+
+    void router.push({ pathname: "/questions", query: {} }, undefined, {
+      shallow: true,
+    });
+  };
 
   const onQuestionAdd = () => {
     setShowAddQuestionModal(false);
     void questionQuery.refetch();
   };
 
-  console.log(questionQuery.data);
+  useEffect(() => {
+    if (router) {
+      const selectedCategories = setMultiSelectInitialValue(
+        router.query.categories,
+        categoryOptions
+      );
+      const selectedGames = setMultiSelectInitialValue(
+        router.query.game,
+        gameOptions
+      );
+      setCategoriesFilter(selectedCategories);
+      setGameFilter(selectedGames);
+
+      if (typeof router.query.q === "string") {
+        setSearch(router.query.q);
+      }
+    }
+  }, [router]);
 
   return (
     <main className="container mx-auto pb-16 pt-24">
@@ -68,13 +142,15 @@ const Questions = () => {
       />
 
       <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
-        <div className="card-body">
+        <form className="card-body" onSubmit={(e) => void filterSubmit(e)}>
           <h2 className="text-center">Filters</h2>
           <div className="grid grid-cols-3 gap-2">
             <input
               type="text"
               placeholder="Search..."
               className="input-bordered input w-full"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
             <MultiSelect
@@ -92,7 +168,15 @@ const Questions = () => {
               name="gameFilters"
             />
           </div>
-        </div>
+          <div className="text-center">
+            <button className="btn-primary btn mr-4" type="submit">
+              Filter
+            </button>
+            <button className="btn-outline btn" onClick={handleClear}>
+              Clear
+            </button>
+          </div>
+        </form>
       </div>
 
       <ul className="mx-auto max-w-4xl">
@@ -128,7 +212,7 @@ const Questions = () => {
                   <ul>
                     {question.categories.split(",").map((category) => {
                       return (
-                        <li className="badge-outline badge mr-2" key={category}>
+                        <li className="badge badge-outline mr-2" key={category}>
                           {category}
                         </li>
                       );
