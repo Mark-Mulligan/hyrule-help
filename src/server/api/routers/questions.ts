@@ -5,6 +5,10 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
+const RouterQueryKey = z
+  .union([z.undefined(), z.string(), z.array(z.string())])
+  .optional();
+
 export const questionsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const result = await ctx.prisma.question.findMany({
@@ -20,9 +24,15 @@ export const questionsRouter = createTRPCRouter({
     return result;
   }),
   getAllFilter: publicProcedure
-    .input(z.object({ categories: z.string().array() }))
+    .input(
+      z.object({
+        categories: RouterQueryKey,
+        game: RouterQueryKey,
+        q: RouterQueryKey,
+      })
+    )
     .query(({ input }) => {
-      console.log(input);
+      console.log({ input });
 
       return "Something";
     }),

@@ -28,6 +28,8 @@ import type { SelectOption } from "~/types/customTypes";
 import { categoryOptions, gameOptions } from "~/utils/selects";
 import { createQueryObject, removeQueryKey } from "~/utils/routing";
 
+type QueryValue = undefined | string | string[];
+
 const setMultiSelectInitialValue = (
   queryValue: undefined | string | string[],
   selectOptions: SelectOption[]
@@ -55,11 +57,17 @@ const Questions = () => {
     refetchOnWindowFocus: false,
   });
 
+  const currentQuery = router.query as {
+    categories?: QueryValue;
+    game: QueryValue;
+    q: QueryValue;
+  };
+
   const filterQuestionQuery = api.questions.getAllFilter.useQuery(
-    { categories: categoriesFilter.map((category) => category.value) },
+    currentQuery,
     {
       refetchOnWindowFocus: false,
-      enabled: false,
+      enabled: router?.query !== undefined,
     }
   );
 
@@ -99,6 +107,8 @@ const Questions = () => {
   };
 
   useEffect(() => {
+    console.log(router.query);
+
     if (router) {
       const selectedCategories = setMultiSelectInitialValue(
         router.query.categories,
@@ -116,6 +126,10 @@ const Questions = () => {
       }
     }
   }, [router]);
+
+  useEffect(() => {
+    console.log(filterQuestionQuery.data);
+  }, [filterQuestionQuery.data]);
 
   return (
     <main className="container mx-auto pb-16 pt-24">
