@@ -31,10 +31,48 @@ export const questionsRouter = createTRPCRouter({
         q: RouterQueryKey,
       })
     )
-    .query(({ input }) => {
+    .query(async ({ input, ctx }) => {
       console.log({ input });
 
-      return "Something";
+      const result = await ctx.prisma.question.findMany({
+        where: {
+          OR: [
+            {
+              content: {
+                contains: "a",
+              },
+            },
+            { title: { contains: "a" } },
+          ],
+          AND: [
+            {
+              OR: [
+                {
+                  categories: {
+                    equals: "gameplay-mechanics",
+                  },
+                },
+                {
+                  categories: {
+                    equals: "weapons",
+                  },
+                },
+              ],
+            },
+            {
+              OR: [
+                {
+                  game: {
+                    equals: "totk",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      return result;
     }),
 
   getQuestion: publicProcedure
