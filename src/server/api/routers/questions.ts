@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -34,43 +36,145 @@ export const questionsRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       console.log({ input });
 
+      const WhereStatement: any = {};
+
+      if (input.q) {
+        WhereStatement.OR = [
+          {
+            content: {
+              contains: input.q,
+            },
+          },
+          {
+            title: {
+              contains: input.q,
+            },
+          },
+        ];
+      }
+
+      if (input.q || (input.categories && input.game)) {
+        WhereStatement.AND = [];
+      }
+
+      if (input.categories) {
+        const categories =
+          typeof input.categories === "string"
+            ? [input.categories]
+            : input.categories;
+        const categoriesSelect = categories.map((category) => {
+          return {
+            categories: {
+              equals: category,
+            },
+          };
+        });
+
+        if (WhereStatement.AND) {
+          WhereStatement.AND.push({ OR: categoriesSelect });
+        } else {
+          WhereStatement.OR = categoriesSelect;
+        }
+      }
+
+      if (input.game) {
+        const games =
+          typeof input.game === "string" ? [input.game] : input.game;
+        const gameSelect = games.map((game) => {
+          return {
+            game: {
+              equals: game,
+            },
+          };
+        });
+
+        if (WhereStatement.AND) {
+          WhereStatement.AND.push({ OR: gameSelect });
+        } else {
+          WhereStatement.OR = { gameSelect };
+        }
+      }
+
+      // if (typeof input.categories === "string") {
+      //   const singleCategorySelect = {
+      //     categories: {
+      //       equals: input.categories,
+      //     },
+      //   };
+
+      //   if (WhereStatement.OR) {
+      //     WhereStatement.AND.push(singleCategorySelect);
+      //   } else {
+      //     WhereStatement = singleCategorySelect;
+      //   }
+      // }
+
+      // if (Array.isArray(input.categories)) {
+      //   const multipleCategories = input.categories.map((category) => {
+      //     return {
+      //       categories: {
+      //         equals: category,
+      //       },
+      //     };
+      //   });
+
+      //   if (WhereStatement.OR) {
+      //     WhereStatement.AND = [
+      //       {
+      //         OR: multipleCategories,
+      //       },
+      //     ];
+      //   } else {
+      //     WhereStatement = {
+      //       OR: multipleCategories,
+      //     };
+      //   }
+      // }
+
+      console.log("where statement", WhereStatement);
+
       const result = await ctx.prisma.question.findMany({
-        where: {
-          OR: [
-            {
-              content: {
-                contains: "a",
-              },
-            },
-            { title: { contains: "a" } },
-          ],
-          AND: [
-            {
-              OR: [
-                {
-                  categories: {
-                    equals: "gameplay-mechanics",
-                  },
-                },
-                {
-                  categories: {
-                    equals: "weapons",
-                  },
-                },
-              ],
-            },
-            {
-              OR: [
-                {
-                  game: {
-                    equals: "totk",
-                  },
-                },
-              ],
-            },
-          ],
-        },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        where: WhereStatement,
       });
+
+      // const result = await ctx.prisma.question.findMany({
+      //   where: {
+      //     OR: [
+      //       {
+      //         content: {
+      //           contains: "a",
+      //         },
+      //       },
+      //       { title: { contains: "a" } },
+      //     ],
+      //     AND: [
+      //       {
+      //         OR: [
+      //           {
+      //             categories: {
+      //               equals: "gameplay-mechanics",
+      //             },
+      //           },
+      //           {
+      //             categories: {
+      //               equals: "weapons",
+      //             },
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         OR: [
+      //           {
+      //             game: {
+      //               equals: "totk",
+      //             },
+      //           },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // });
 
       return result;
     }),
