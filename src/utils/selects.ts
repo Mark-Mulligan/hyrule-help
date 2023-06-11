@@ -6,6 +6,7 @@ export const categoryOptions = [
   { label: "Weapons", value: "weapons" },
   { label: "Koroks", value: "koroks" },
   { label: "Gameplay Mechanics", value: "gameplay-mechanics" },
+  { label: "General", value: "general" },
 ];
 
 export const gameOptions = [
