@@ -53,10 +53,6 @@ const Questions = () => {
   const [gameFilter, setGameFilter] = useState<SelectOption[]>([]);
   const [search, setSearch] = useState("");
 
-  const questionQuery = api.questions.getAll.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-
   const currentQuery = router.query as {
     categories?: QueryValue;
     game: QueryValue;
@@ -67,7 +63,7 @@ const Questions = () => {
     currentQuery,
     {
       refetchOnWindowFocus: false,
-      enabled: router?.query !== undefined,
+      enabled: router.isReady,
     }
   );
 
@@ -103,7 +99,7 @@ const Questions = () => {
 
   const onQuestionAdd = () => {
     setShowAddQuestionModal(false);
-    void questionQuery.refetch();
+    void filterQuestionQuery.refetch();
   };
 
   useEffect(() => {
@@ -194,7 +190,7 @@ const Questions = () => {
       </div>
 
       <ul className="mx-auto max-w-4xl">
-        {questionQuery.data?.map((question) => {
+        {filterQuestionQuery.data?.map((question) => {
           return (
             <Link key={question.id} href={`/questions/${question.id}`}>
               <li className="mb-4 flex cursor-pointer overflow-hidden rounded-2xl bg-base-100 shadow-xl">
@@ -238,7 +234,7 @@ const Questions = () => {
           );
         })}
       </ul>
-      {questionQuery.isLoading && (
+      {filterQuestionQuery.isLoading && (
         <LoadingModal loadingText="Loading Questions..." />
       )}
     </main>

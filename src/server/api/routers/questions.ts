@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { z } from "zod";
@@ -95,49 +96,22 @@ export const questionsRouter = createTRPCRouter({
         }
       }
 
-      // if (typeof input.categories === "string") {
-      //   const singleCategorySelect = {
-      //     categories: {
-      //       equals: input.categories,
-      //     },
-      //   };
-
-      //   if (WhereStatement.OR) {
-      //     WhereStatement.AND.push(singleCategorySelect);
-      //   } else {
-      //     WhereStatement = singleCategorySelect;
-      //   }
-      // }
-
-      // if (Array.isArray(input.categories)) {
-      //   const multipleCategories = input.categories.map((category) => {
-      //     return {
-      //       categories: {
-      //         equals: category,
-      //       },
-      //     };
-      //   });
-
-      //   if (WhereStatement.OR) {
-      //     WhereStatement.AND = [
-      //       {
-      //         OR: multipleCategories,
-      //       },
-      //     ];
-      //   } else {
-      //     WhereStatement = {
-      //       OR: multipleCategories,
-      //     };
-      //   }
-      // }
-
       console.log("where statement", WhereStatement);
 
       const result = await ctx.prisma.question.findMany({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         where: WhereStatement,
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
+      /**
+       * Example complex query call that is valid
+       */
       // const result = await ctx.prisma.question.findMany({
       //   where: {
       //     OR: [
