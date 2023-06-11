@@ -1,5 +1,12 @@
 // react
-import { Fragment, useState, FC, Dispatch, SetStateAction } from "react";
+import {
+  Fragment,
+  useState,
+  useEffect,
+  type FC,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 // Headless-UI
 import { Listbox, Transition } from "@headlessui/react";
@@ -38,7 +45,6 @@ const MultiSelect: FC<IProps> = ({
     });
 
     setSelectedOptions(result);
-    setSelectedValues(value);
   };
 
   const handleDelete = (value: string) => {
@@ -46,9 +52,12 @@ const MultiSelect: FC<IProps> = ({
       (option) => option.value !== value
     );
     setSelectedOptions(newSelectedOptions);
-    const newSelectedValues = newSelectedOptions.map((option) => option.value);
-    setSelectedValues(newSelectedValues);
   };
+
+  useEffect(() => {
+    const newValues = selectedOptions.map((option) => option.value);
+    setSelectedValues(newValues);
+  }, [selectedOptions]);
 
   return (
     <Listbox multiple value={selectedValues} onChange={handleSelect} as="div">

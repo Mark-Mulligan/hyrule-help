@@ -4,6 +4,9 @@ import { useState } from "react";
 // Next
 import { useRouter } from "next/router";
 
+// Next-Auth
+import { useSession, signIn } from "next-auth/react";
+
 // Moment JS
 import moment from "moment";
 
@@ -14,7 +17,9 @@ import { api } from "~/utils/api";
 import CommentModal from "~/components/CommentModal";
 
 const QuestionPage = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+
   const questionId = router?.query?.id as string | undefined;
 
   const [showCommentModal, setShowCommentModal] = useState(false);
@@ -51,7 +56,7 @@ const QuestionPage = () => {
                 {questionQuery.data?.categories.split(",").map((category) => {
                   return (
                     <li
-                      className="badge-outline badge mr-2 font-light"
+                      className="badge badge-outline mr-2 font-light"
                       key={category}
                     >
                       {category}
@@ -72,7 +77,13 @@ const QuestionPage = () => {
         </ul>
         <button
           className="btn-primary btn"
-          onClick={() => setShowCommentModal(true)}
+          onClick={() => {
+            if (session?.user) {
+              setShowCommentModal(true);
+            } else {
+              void signIn();
+            }
+          }}
         >
           Comment
         </button>

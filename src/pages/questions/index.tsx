@@ -5,7 +5,6 @@ import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
 
 // Next-Auth
 import { useSession, signIn } from "next-auth/react";
@@ -26,7 +25,6 @@ import type { SelectOption } from "~/types/customTypes";
 
 // Utils
 import { categoryOptions, gameOptions } from "~/utils/selects";
-import { createQueryObject, removeQueryKey } from "~/utils/routing";
 
 type QueryValue = undefined | string | string[];
 
@@ -103,8 +101,6 @@ const Questions = () => {
   };
 
   useEffect(() => {
-    console.log(router.query);
-
     if (router) {
       const selectedCategories = setMultiSelectInitialValue(
         router.query.categories,
@@ -122,10 +118,6 @@ const Questions = () => {
       }
     }
   }, [router]);
-
-  useEffect(() => {
-    console.log(filterQuestionQuery.data);
-  }, [filterQuestionQuery.data]);
 
   return (
     <main className="container mx-auto pb-16 pt-24">
