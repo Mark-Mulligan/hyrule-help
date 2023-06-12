@@ -14,20 +14,7 @@ const RouterQueryKey = z
   .optional();
 
 export const questionsRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const result = await ctx.prisma.question.findMany({
-      include: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    return result;
-  }),
-  getAllFilter: publicProcedure
+  getAllFilterCount: publicProcedure
     .input(
       z.object({
         categories: RouterQueryKey,
@@ -99,15 +86,8 @@ export const questionsRouter = createTRPCRouter({
 
       console.log("where statement", WhereStatement);
 
-      const result = await ctx.prisma.question.findMany({
+      const result = await ctx.prisma.question.count({
         where: WhereStatement,
-        include: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
       });
 
       /**
@@ -153,6 +133,7 @@ export const questionsRouter = createTRPCRouter({
 
       return result;
     }),
+
   infiniteGetAllFilter: publicProcedure
     .input(
       z.object({
@@ -234,7 +215,7 @@ export const questionsRouter = createTRPCRouter({
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
-          id: "asc",
+          id: "desc",
         },
         where: WhereStatement,
         include: {

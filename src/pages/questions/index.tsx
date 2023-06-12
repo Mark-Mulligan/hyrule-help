@@ -57,7 +57,7 @@ const Questions = () => {
     q: QueryValue;
   };
 
-  const filterQuestionQuery = api.questions.getAllFilter.useQuery(
+  const filterQuestionQueryCount = api.questions.getAllFilterCount.useQuery(
     currentQuery,
     {
       refetchOnWindowFocus: false,
@@ -73,6 +73,7 @@ const Questions = () => {
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
+        enabled: router.isReady,
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
     );
@@ -118,7 +119,7 @@ const Questions = () => {
 
   const onQuestionAdd = () => {
     setShowAddQuestionModal(false);
-    void filterQuestionQuery.refetch();
+    void infiniteFilterQuestionQuery.refetch();
   };
 
   useEffect(() => {
@@ -202,9 +203,9 @@ const Questions = () => {
               Clear
             </button>
           </div>
-          {filterQuestionQuery?.data?.length && (
+          {filterQuestionQueryCount.data && (
             <p className="text-center">
-              {filterQuestionQuery?.data?.length} Results
+              {filterQuestionQueryCount.data} Results
             </p>
           )}
         </form>
@@ -272,7 +273,7 @@ const Questions = () => {
           Load More
         </button>
       )}
-      {filterQuestionQuery.isLoading && (
+      {infiniteFilterQuestionQuery.isLoading && (
         <LoadingModal loadingText="Loading Questions..." />
       )}
     </main>
