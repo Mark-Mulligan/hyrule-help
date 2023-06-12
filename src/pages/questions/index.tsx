@@ -74,7 +74,7 @@ const Questions = () => {
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: router.isReady,
+        enabled: router.isReady && filterQuestionQueryCount.isFetched,
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
     );
@@ -118,9 +118,10 @@ const Questions = () => {
     });
   };
 
-  const onQuestionAdd = () => {
+  const onQuestionAdd = async () => {
     setShowAddQuestionModal(false);
-    void infiniteFilterQuestionQuery.refetch();
+    await filterQuestionQueryCount.refetch();
+    await infiniteFilterQuestionQuery.refetch();
   };
 
   useEffect(() => {
@@ -167,7 +168,7 @@ const Questions = () => {
       <QuestionModal
         isOpen={showAddQuestionModal}
         handleClose={() => setShowAddQuestionModal(false)}
-        onQuestionAdd={onQuestionAdd}
+        onQuestionAdd={() => onQuestionAdd()}
       />
 
       <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
@@ -204,7 +205,8 @@ const Questions = () => {
               Clear
             </button>
           </div>
-          {filterQuestionQueryCount.data && (
+
+          {filterQuestionQueryCount.data !== undefined && (
             <p className="text-center">
               {filterQuestionQueryCount.data} Results
             </p>
@@ -276,7 +278,8 @@ const Questions = () => {
           </button>
         </div>
       )}
-      {infiniteFilterQuestionQuery.isLoading && (
+      {(infiniteFilterQuestionQuery.isLoading ||
+        filterQuestionQueryCount.isLoading) && (
         <LoadingModal loadingText="Loading Questions..." />
       )}
     </main>

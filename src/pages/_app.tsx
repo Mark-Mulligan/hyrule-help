@@ -26,7 +26,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
           src="/zeldaBackground.webp"
           alt="Background Image"
           className="object-cover"
-          priority
           fill
         />
       </div>

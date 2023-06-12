@@ -17,7 +17,7 @@ import { categoryOptions, gameOptions } from "~/utils/selects";
 interface IProps {
   handleClose: () => void;
   isOpen: boolean;
-  onQuestionAdd: () => void;
+  onQuestionAdd: () => Promise<void>;
 }
 
 const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
@@ -39,9 +39,9 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
   };
 
   const questionMutation = api.questions.addQuestion.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       clearForm();
-      onQuestionAdd();
+      await onQuestionAdd();
     },
   });
 
