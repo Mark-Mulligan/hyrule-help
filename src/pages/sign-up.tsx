@@ -12,6 +12,7 @@ const SignUp = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const onUserCreated = async () => {
@@ -27,6 +28,12 @@ const SignUp = () => {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert("Password and Confirm password must match");
+      return;
+    }
+
     createUserMutation.mutate({ username, password });
   };
 
@@ -78,6 +85,19 @@ const SignUp = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="password"
+                className="input-bordered input w-full"
+                required
+              />
+            </li>
+            <li className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Confrim Password</span>
+              </label>
+              <input
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type="password"
+                placeholder="confirm password"
                 className="input-bordered input w-full"
                 required
               />

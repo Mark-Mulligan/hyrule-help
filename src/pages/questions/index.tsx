@@ -73,6 +73,7 @@ const Questions = () => {
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
+        refetchOnWindowFocus: false,
         enabled: router.isReady,
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
@@ -249,7 +250,7 @@ const Questions = () => {
                         {question.categories.split(",").map((category) => {
                           return (
                             <li
-                              className="badge badge-outline mr-2"
+                              className="badge-outline badge mr-2"
                               key={category}
                             >
                               {category}
@@ -266,12 +267,14 @@ const Questions = () => {
       </ul>
 
       {nextPage && (
-        <button
-          onClick={() => void infiniteFilterQuestionQuery.fetchNextPage()}
-          className="btn-primary btn"
-        >
-          Load More
-        </button>
+        <div className="text-center">
+          <button
+            onClick={() => void infiniteFilterQuestionQuery.fetchNextPage()}
+            className="btn-primary btn"
+          >
+            Load More
+          </button>
+        </div>
       )}
       {infiniteFilterQuestionQuery.isLoading && (
         <LoadingModal loadingText="Loading Questions..." />

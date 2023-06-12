@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { hashSync } from "bcryptjs";
 
 export const usersRouter = createTRPCRouter({
   createUser: publicProcedure
-    .input(z.object({ username: z.string(), password: z.string() }))
+    .input(z.object({ username: z.string(), password: z.string().min(8) }))
     .mutation(async ({ ctx, input }) => {
       const { username, password } = input;
 
@@ -21,10 +22,12 @@ export const usersRouter = createTRPCRouter({
         });
       }
 
+      const hashedPassword = hashSync(password, 10);
+
       const result = await ctx.prisma.user.create({
         data: {
           name: username,
-          password,
+          password: hashedPassword,
         },
       });
 

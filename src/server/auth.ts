@@ -14,6 +14,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "~/server/db";
 
+// bcryptjs
+import { compareSync } from "bcryptjs";
+
 // Env
 import { env } from "~/env.mjs";
 
@@ -82,8 +85,11 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findFirst({ where: { name: username } });
 
-        if (user && password) {
-          if (user.password === password) {
+        if (user && user.password && password) {
+          const passwordMatches = compareSync(password, user.password);
+          console.log({ passwordMatches });
+
+          if (passwordMatches) {
             return user;
           }
 

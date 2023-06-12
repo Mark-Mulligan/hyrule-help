@@ -7,7 +7,6 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { Question } from "@prisma/client";
 
 const RouterQueryKey = z
   .union([z.undefined(), z.string(), z.array(z.string())])
