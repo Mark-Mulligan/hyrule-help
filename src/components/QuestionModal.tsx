@@ -128,7 +128,7 @@ const QuestionModal: FC<IProps> = ({ handleClose, isOpen, onQuestionAdd }) => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="textarea-bordered textarea h-24"
-                placeholder="Bio"
+                placeholder="Enter question here"
                 required
               ></textarea>
             </li>

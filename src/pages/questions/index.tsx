@@ -1,5 +1,5 @@
 // react
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent, useMemo } from "react";
 
 // next
 import Image from "next/image";
@@ -65,6 +65,27 @@ const Questions = () => {
     }
   );
 
+  const infiniteFilterQuestionQuery =
+    api.questions.infiniteGetAllFilter.useInfiniteQuery(
+      {
+        limit: 5,
+        ...currentQuery,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        // initialCursor: 1, // <-- optional you can pass an initialCursor
+      }
+    );
+
+  const nextPage = useMemo(() => {
+    if (infiniteFilterQuestionQuery?.data?.pages) {
+      const lastPage = infiniteFilterQuestionQuery.data.pages.length;
+      const result =
+        infiniteFilterQuestionQuery?.data?.pages[lastPage - 1]?.nextCursor;
+      return result;
+    }
+  }, [infiniteFilterQuestionQuery]);
+
   const filterSubmit = (e: FormEvent) => {
     e.preventDefault();
 
@@ -119,6 +140,10 @@ const Questions = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+    console.log(infiniteFilterQuestionQuery.data);
+  }, [infiniteFilterQuestionQuery.data]);
+
   return (
     <main className="container mx-auto pb-16 pt-24">
       <h1 className="relative mx-auto mb-4 max-w-4xl text-center text-5xl font-bold">
@@ -145,8 +170,7 @@ const Questions = () => {
 
       <div className="card mx-auto mb-8 max-w-4xl bg-base-300">
         <form className="card-body" onSubmit={(e) => void filterSubmit(e)}>
-          <h2 className="text-center">Filters</h2>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="mb-3 grid grid-cols-1 gap-2 md:grid-cols-3">
             <input
               type="text"
               placeholder="Search..."
@@ -178,54 +202,76 @@ const Questions = () => {
               Clear
             </button>
           </div>
+          {filterQuestionQuery?.data?.length && (
+            <p className="text-center">
+              {filterQuestionQuery?.data?.length} Results
+            </p>
+          )}
         </form>
       </div>
 
       <ul className="mx-auto max-w-4xl">
-        {filterQuestionQuery.data?.map((question) => {
-          return (
-            <Link key={question.id} href={`/questions/${question.id}`}>
-              <li className="mb-4 flex cursor-pointer overflow-hidden rounded-2xl bg-base-100 shadow-xl">
-                <figure className="inline-block w-36">
-                  <Image
-                    src={question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"}
-                    alt={
-                      question.game === "botw"
-                        ? "Breath of the wild cover photo"
-                        : "Tears of the kingdom cover photo"
-                    }
-                    className="h-full w-36"
-                    width={100}
-                    height={100}
-                  />
-                </figure>
-                <div className="flex-1 flex-wrap p-5">
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <h2 className="card-title">{question.title}</h2>
-                    <p className="flex-none font-light">
-                      {moment(question.createdAt).format(
-                        "MMMM Do YYYY, h:mm a"
-                      )}
-                    </p>
-                  </div>
+        {infiniteFilterQuestionQuery?.data?.pages &&
+          infiniteFilterQuestionQuery.data.pages.map(({ result }) => {
+            return result.map((question) => {
+              return (
+                <Link key={question.id} href={`/questions/${question.id}`}>
+                  <li className="mb-4 flex cursor-pointer overflow-hidden rounded-2xl bg-base-100 shadow-xl">
+                    <figure className="inline-block w-36">
+                      <Image
+                        src={
+                          question.game === "botw" ? "/botw.jpeg" : "/totk.jpeg"
+                        }
+                        alt={
+                          question.game === "botw"
+                            ? "Breath of the wild cover photo"
+                            : "Tears of the kingdom cover photo"
+                        }
+                        className="h-full w-36"
+                        width={100}
+                        height={100}
+                      />
+                    </figure>
+                    <div className="flex-1 flex-wrap p-5">
+                      <div className="flex w-full flex-row items-center justify-between">
+                        <h2 className="card-title">{question.title}</h2>
+                        <p className="flex-none font-light">
+                          {moment(question.createdAt).format(
+                            "MMMM Do YYYY, h:mm a"
+                          )}
+                        </p>
+                      </div>
 
-                  <p>{question.user.name}</p>
-                  <p>{question.content}</p>
-                  <ul>
-                    {question.categories.split(",").map((category) => {
-                      return (
-                        <li className="badge badge-outline mr-2" key={category}>
-                          {category}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </li>
-            </Link>
-          );
-        })}
+                      <p>{question.user.name}</p>
+                      <p>{question.content}</p>
+                      <ul>
+                        {question.categories.split(",").map((category) => {
+                          return (
+                            <li
+                              className="badge badge-outline mr-2"
+                              key={category}
+                            >
+                              {category}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </li>
+                </Link>
+              );
+            });
+          })}
       </ul>
+
+      {nextPage && (
+        <button
+          onClick={() => void infiniteFilterQuestionQuery.fetchNextPage()}
+          className="btn-primary btn"
+        >
+          Load More
+        </button>
+      )}
       {filterQuestionQuery.isLoading && (
         <LoadingModal loadingText="Loading Questions..." />
       )}
