@@ -62,6 +62,8 @@ const Questions = () => {
     {
       refetchOnWindowFocus: false,
       enabled: router.isReady,
+      cacheTime: 0,
+      staleTime: 0,
     }
   );
 
