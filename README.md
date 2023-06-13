@@ -1,4 +1,8 @@
-# Create T3 App
+# Hyrule Help (T3 Demo App)
+
+##
+
+## T3 Readme Docs
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 

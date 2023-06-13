@@ -31,7 +31,7 @@ export default function SignIn({
               {Object.values(providers).map((provider) => {
                 if (provider.id === "credentials") {
                   return (
-                    <>
+                    <div key={provider.id}>
                       <div className="divider w-full" />
                       <form
                         className="w-full"
@@ -72,7 +72,7 @@ export default function SignIn({
                           Sign in
                         </button>
                       </form>
-                    </>
+                    </div>
                   );
                 }
 
