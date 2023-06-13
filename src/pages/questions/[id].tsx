@@ -26,14 +26,14 @@ const QuestionPage = () => {
 
   const questionQuery = api.questions.getQuestion.useQuery(
     { id: questionId || "" },
-    { enabled: !!questionId }
+    { enabled: !!questionId && router.isReady }
   );
 
   const commentsQuery = api.comments.getAllForQuestion.useQuery(
     {
       questionId: questionId || "",
     },
-    { enabled: !!questionId }
+    { enabled: !!questionId && router.isReady }
   );
 
   const onCommentAdd = () => {
@@ -56,7 +56,7 @@ const QuestionPage = () => {
                 {questionQuery.data?.categories.split(",").map((category) => {
                   return (
                     <li
-                      className="badge badge-outline mr-2 font-light"
+                      className="badge-outline badge mr-2 font-light"
                       key={category}
                     >
                       {category}
