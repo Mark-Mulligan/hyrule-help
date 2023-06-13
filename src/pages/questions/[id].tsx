@@ -33,7 +33,7 @@ const QuestionPage = () => {
     {
       questionId: questionId || "",
     },
-    { enabled: !!questionId && router.isReady }
+    { enabled: !!questionId && questionQuery.isFetched }
   );
 
   const onCommentAdd = () => {
