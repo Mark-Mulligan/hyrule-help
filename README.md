@@ -2,9 +2,11 @@
 
 ## Steps to Run Locally
 
-1.  Clone down the code from the [gihtub repop](https://github.com/Mark-Mulligan/hyrule-help)
+1.  Fork the code from the [gihtub repop](https://github.com/Mark-Mulligan/hyrule-help)
 
-2.  Install all the dependencies
+2.  Clone down the code to your local machine
+
+3.  Install all the dependencies
 
 ```
 npm install
@@ -12,26 +14,26 @@ yarn install
 etc.
 ```
 
-3.  Make the following changes to the schema.prisma file in the db Source section
+4.  Make the following changes to the schema.prisma file in the db Source section
 
 - change the provider to "sqlite" (you can uncomment the section where that is provided and comment out the provider set to postgresql)
 - comment out the directURL variable (this will not be needed for local development)
 
-4.  Create a .env file in the root of the project. You can copy over the .env.example as a starting template.
+5.  Create a .env file in the root of the project. You can copy over the .env.example as a starting template.
 
 - Go ahead and update the NEXTAUTH_SECRET to a more secure string
 
-5.  If the above steps have been followed, you should be able to generate a sqlite db file in the prisma directory by running the following command in your terminal in the root of the project
+6.  If the above steps have been followed, you should be able to generate a sqlite db file in the prisma directory by running the following command in your terminal in the root of the project
 
 ```
 npx prisma db push
 ```
 
-6.  (Optional) Add discord authentication. Use these [instructions](https://create.t3.gg/en/usage/first-steps#authentication) to register the app with discord and to get your DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET. These values will go in the .env file and allow you to login with discord.
+7.  (Optional) Add discord authentication. Use these [instructions](https://create.t3.gg/en/usage/first-steps#authentication) to register the app with discord and to get your DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET. These values will go in the .env file and allow you to login with discord.
 
-7.  Note, you should be able to create and login in with users using the credentials feature. Just be aware that this is a demo app and the credentials features does not refresh the access tokens. This may cause some unexpected results if testing as a credentials user.
+8.  Note, you should be able to create and login in with users using the credentials feature. Just be aware that this is a demo app and the credentials features does not refresh the access tokens. This may cause some unexpected results if testing as a credentials user.
 
-8.  To start the app in development mode, run
+9.  To start the app in development mode, run
 
 ```
 npm run dev
