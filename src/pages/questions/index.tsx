@@ -25,6 +25,7 @@ import type { SelectOption } from "~/types/customTypes";
 
 // Utils
 import { categoryOptions, gameOptions } from "~/utils/selects";
+import { truncateString } from "~/utils/general";
 
 type QueryValue = undefined | string | string[];
 
@@ -248,7 +249,7 @@ const Questions = () => {
                       </div>
 
                       <p>{question.user.name}</p>
-                      <p>{question.content}</p>
+                      <p>{truncateString(question.content)}</p>
                       <ul>
                         {question.categories.split(",").map((category) => {
                           return (
