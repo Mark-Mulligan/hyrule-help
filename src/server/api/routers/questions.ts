@@ -232,7 +232,7 @@ export const questionsRouter = createTRPCRouter({
         orderBy: {
           id: "desc",
         },
-        // where: WhereStatement,
+        where: WhereStatement,
         include: {
           user: {
             select: {

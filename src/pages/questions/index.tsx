@@ -79,8 +79,7 @@ const Questions = () => {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
         enabled: router.isReady,
-        cacheTime: 0,
-        staleTime: 0,
+
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
     );
@@ -128,7 +127,6 @@ const Questions = () => {
     setShowAddQuestionModal(false);
     await filterQuestionQueryCount.refetch();
     await infiniteFilterQuestionQuery.refetch();
-    // await questionQuery.refetch();
   };
 
   useEffect(() => {
