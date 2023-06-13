@@ -31,6 +31,12 @@ npx prisma db push
 
 7.  Note, you should be able to create and login in with users using the credentials feature. Just be aware that this is a demo app and the credentials features does not refresh the access tokens. This may cause some unexpected results if testing as a credentials user.
 
+8.  To start the app in development mode, run
+
+```
+npm run dev
+```
+
 ## Deploy the project
 
 You will need to connect your project to a deployed database. I personally used supabase, but any deployed sql database should work. The T3 docs below have a lot of good advice about your different deployement options. I used vercel as it was the most straight forward process.
