@@ -11,6 +11,8 @@ generator client {
 datasource db {
   // Use provider sqlite when developing locally
   // provider = "sqlite"
+
+  // Use provider postgresql etc. when connecting to a real database
   provider = "postgresql"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
