@@ -62,8 +62,6 @@ const Questions = () => {
     {
       refetchOnWindowFocus: false,
       enabled: router.isReady,
-      cacheTime: 0,
-      staleTime: 0,
     }
   );
 
@@ -76,6 +74,8 @@ const Questions = () => {
       {
         limit: 5,
         ...currentQuery,
+        cacheTime: 0,
+        staleTime: 0,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
