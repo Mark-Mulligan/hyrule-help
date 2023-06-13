@@ -13,6 +13,22 @@ const RouterQueryKey = z
   .optional();
 
 export const questionsRouter = createTRPCRouter({
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    console.log("new route ran");
+
+    const result = await ctx.prisma.question.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return result;
+  }),
+
   getAllFilterCount: publicProcedure
     .input(
       z.object({
@@ -216,7 +232,7 @@ export const questionsRouter = createTRPCRouter({
         orderBy: {
           id: "desc",
         },
-        where: WhereStatement,
+        // where: WhereStatement,
         include: {
           user: {
             select: {

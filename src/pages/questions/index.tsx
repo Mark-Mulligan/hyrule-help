@@ -65,6 +65,10 @@ const Questions = () => {
     }
   );
 
+  // const questionQuery = api.questions.getAll.useQuery(undefined, {
+  //   refetchOnWindowFocus: false,
+  // });
+
   const infiniteFilterQuestionQuery =
     api.questions.infiniteGetAllFilter.useInfiniteQuery(
       {
@@ -74,7 +78,7 @@ const Questions = () => {
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
-        enabled: router.isReady && filterQuestionQueryCount.isFetched,
+        enabled: router.isReady,
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
     );
@@ -122,6 +126,7 @@ const Questions = () => {
     setShowAddQuestionModal(false);
     await filterQuestionQueryCount.refetch();
     await infiniteFilterQuestionQuery.refetch();
+    // await questionQuery.refetch();
   };
 
   useEffect(() => {
@@ -142,10 +147,6 @@ const Questions = () => {
       }
     }
   }, [router]);
-
-  useEffect(() => {
-    console.log(infiniteFilterQuestionQuery.data);
-  }, [infiniteFilterQuestionQuery.data]);
 
   return (
     <main className="container mx-auto pb-16 pt-24">
@@ -278,8 +279,7 @@ const Questions = () => {
           </button>
         </div>
       )}
-      {(infiniteFilterQuestionQuery.isLoading ||
-        filterQuestionQueryCount.isLoading) && (
+      {infiniteFilterQuestionQuery.isLoading && (
         <LoadingModal loadingText="Loading Questions..." />
       )}
     </main>
