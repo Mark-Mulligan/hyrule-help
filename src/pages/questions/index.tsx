@@ -74,13 +74,13 @@ const Questions = () => {
       {
         limit: 5,
         ...currentQuery,
-        cacheTime: 0,
-        staleTime: 0,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         refetchOnWindowFocus: false,
         enabled: router.isReady,
+        cacheTime: 0,
+        staleTime: 0,
         // initialCursor: 1, // <-- optional you can pass an initialCursor
       }
     );
